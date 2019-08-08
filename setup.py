@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# todo default editor subl
-# todo alias
-# todo bashrc
+
 from subprocess import run
 import subprocess
 
-APT_PACKAGES = ['python3-pip', 'python-pip', 'htop', 'git', 'snapd']
+APT_PACKAGES = ['python3-pip', 'python-pip', 'htop', 'git', 'snapd', 'gnome-tweaks']
 PIP_INSTALL = ['jupyterlab', 'numpy', 'pandas', 'matplotlib', 'tqdm', 'inquirer', 'seaborn']
 SNAP_PACKAGES = [('bitwarden', False),
                  ('gitkraken', False),
@@ -46,6 +44,32 @@ def install_package_pip(package):
     print("Done!\n")
 
 
+def change_bashrc():
+    print(f"Changing bashrc...")
+    run(["rm", "~/.bashrc"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+    run(["cp", "bashrc", "~/.bashrc"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+    run(["rm", "bashrc"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+    print("Done!\n")
+
+
+def change_theme():
+    print(f"Changing theme...")
+    run(["cp", "theme/02-McMojave-circle-black.tar.xz", "~/.icons"], check=True, stdout=STD_OUT,
+        stderr=subprocess.STDOUT)
+    run(["cp", "theme/02-McMojave-circle-black.tar.xz", "~/.themes"], check=True, stdout=STD_OUT,
+        stderr=subprocess.STDOUT)
+    run(["tar", "xf", "~/.themes/*.tar.xz"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+    run(["tar", "xf", "~/.icons/*.tar.xz"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+    run(["rm", "~/.themes/*.tar.xz"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+    run(["rm", "~/.icons/*.tar.xz"], check=True, stdout=STD_OUT, stderr=subprocess.STDOUT)
+
+    run(["gsettings", "set", "org.gnome.desktop.interface", "gtk-theme", "\"Mojave-dark-solid\""], check=True,
+        stdout=STD_OUT, stderr=subprocess.STDOUT)
+    run(["gsettings", "set", "org.gnome.desktop.interface", "icon-theme", "\"McMojave-circle-dark\""], check=True,
+        stdout=STD_OUT, stderr=subprocess.STDOUT)
+    print("Done!\n")
+
+
 if __name__ == '__main__':
     import os
 
@@ -62,3 +86,6 @@ if __name__ == '__main__':
 
         for p in PIP_INSTALL:
             install_package_pip(p)
+
+        change_bashrc()
+        change_theme()
